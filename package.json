@@ -1,0 +1,38 @@
+{
+  "name": "budget-expense-tracker-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main/server.js",
+    "dev": "ts-node src/main/server.ts",
+    "smoke:auth": "node scripts/smoke-auth.js --provider all",
+    "smoke:auth:mongodb": "node scripts/smoke-auth.js --provider mongodb",
+    "smoke:auth:sqlite": "node scripts/smoke-auth.js --provider sqlite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "argon2": "^0.44.0",
+    "better-sqlite3": "^12.9.0",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^6.21.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.6.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}
