@@ -5,7 +5,7 @@ import { closePersistence, initializePersistence } from "../infrastructure/confi
 import { swaggerSpec } from "../infrastructure/config/swagger";
 import { registerHttpRoutes } from "../infrastructure/http/routes";
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 

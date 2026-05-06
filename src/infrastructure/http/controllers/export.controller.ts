@@ -86,7 +86,7 @@ function parseTransactionExportQuery(query: ExportQueryInput): ParsedTransaction
 function getBaseUrl(req: Request): string {
   const forwardedProto = req.get("x-forwarded-proto");
   const protocol = forwardedProto ? forwardedProto.split(",")[0].trim() : req.protocol;
-  const host = req.get("host") ?? "localhost:3001";
+  const host = req.get("host") ?? "localhost:3000";
   return `${protocol}://${host}`;
 }
 

@@ -11,7 +11,7 @@ export const swaggerSpec = swaggerJsdoc({
       description:
         "Local-first budget & expense tracking API using Express, TypeScript, SQLite, and optional MongoDB with JWT authentication. Business data is user-scoped from bearer auth context; legacy unowned rows are hidden by default (Option A).",
     },
-    servers: [{ url: "http://localhost:3001", description: "Local development" }],
+    servers: [{ url: "/", description: "Current host" }],
     tags: [
       { name: "Health", description: "Service status" },
       { name: "Authentication", description: "Register, login, token refresh, and current user" },

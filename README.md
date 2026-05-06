@@ -48,7 +48,7 @@ npm run build
 npm start
 ```
 
-The server starts on **http://localhost:3001** by default. Set the `PORT` environment variable to change it.
+The server starts on **http://localhost:3000** by default. Set the `PORT` environment variable to change it.
 
 ### Run With Docker Compose
 
