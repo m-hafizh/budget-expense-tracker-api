@@ -154,6 +154,9 @@ Required Vercel environment variables:
 - `MONGODB_URI` (use a cloud MongoDB URI such as MongoDB Atlas)
 - `MONGODB_DB_NAME`
 
+`MONGODB_URI` must be saved as raw text without wrapping quotes.
+Example: `mongodb+srv://user:password@cluster.example.mongodb.net/?retryWrites=true&w=majority`
+
 Important note:
 
 - Do not use SQLite on Vercel (`DB_PROVIDER=sqlite`) because serverless file systems are ephemeral and unsuitable for persistent SQLite data.

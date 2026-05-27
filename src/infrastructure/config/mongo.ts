@@ -43,8 +43,56 @@ interface RefreshTokenDocument {
 let client: MongoClient | null = null;
 let database: Db | null = null;
 
+function unwrapQuotedEnvValue(value: string): { value: string; hadWrappingQuotes: boolean } {
+  if (value.length >= 2) {
+    const first = value[0];
+    const last = value[value.length - 1];
+    const isDoubleQuoted = first === '"' && last === '"';
+    const isSingleQuoted = first === "'" && last === "'";
+
+    if (isDoubleQuoted || isSingleQuoted) {
+      return { value: value.slice(1, -1).trim(), hadWrappingQuotes: true };
+    }
+  }
+
+  return { value, hadWrappingQuotes: false };
+}
+
+function validateMongoUri(uri: string): void {
+  if (!uri) {
+    throw new Error(
+      "[mongo] MONGODB_URI is empty. Set a valid MongoDB connection string."
+    );
+  }
+
+  if (uri.includes("<") || uri.includes(">")) {
+    throw new Error(
+      "[mongo] MONGODB_URI looks like a placeholder. Replace it with a real connection string."
+    );
+  }
+
+  if (!uri.startsWith("mongodb://") && !uri.startsWith("mongodb+srv://")) {
+    throw new Error(
+      '[mongo] Invalid MONGODB_URI scheme. Expected "mongodb://" or "mongodb+srv://".'
+    );
+  }
+}
+
 function getMongoUri(): string {
-  return process.env.MONGODB_URI?.trim() || DEFAULT_MONGODB_URI;
+  const rawUri = process.env.MONGODB_URI?.trim();
+
+  if (!rawUri) {
+    return DEFAULT_MONGODB_URI;
+  }
+
+  const { value: normalizedUri, hadWrappingQuotes } = unwrapQuotedEnvValue(rawUri);
+
+  if (hadWrappingQuotes) {
+    console.warn("[mongo] MONGODB_URI had wrapping quotes; using the unquoted value.");
+  }
+
+  validateMongoUri(normalizedUri);
+  return normalizedUri;
 }
 
 function getMongoDbName(): string {
@@ -110,13 +158,22 @@ async function ensureMongoIndexesAndSeed(db: Db): Promise<void> {
 export async function initMongoDatabase(): Promise<Db> {
   if (database) return database;
 
-  client = new MongoClient(getMongoUri());
-  await client.connect();
+  const mongoUri = getMongoUri();
+
+  try {
+    client = new MongoClient(mongoUri);
+    await client.connect();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown MongoDB error";
+    throw new Error(
+      `[mongo] Failed to initialize MongoDB connection. Check MONGODB_URI format and credentials. ${message}`
+    );
+  }
 
   database = client.db(getMongoDbName());
   await ensureMongoIndexesAndSeed(database);
 
-  console.log(`📂 MongoDB connected: ${getMongoDbName()} @ ${getMongoUri()}`);
+  console.log(`📂 MongoDB connected: ${getMongoDbName()} @ ${mongoUri}`);
   return database;
 }
 
