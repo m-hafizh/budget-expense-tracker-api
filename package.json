@@ -2,7 +2,7 @@
   "name": "budget-expense-tracker-api",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/main/server.js",
+  "main": "src/server.ts",
   "scripts": {
     "build": "tsc",
     "start": "node dist/main/server.js",
