@@ -1,9 +1,6 @@
-import { closeDatabase, getDatabase } from "./sqlite3";
-import { closeMongoDatabase, initMongoDatabase } from "./mongo";
-
 export type DatabaseProvider = "sqlite" | "mongodb";
 
-const DEFAULT_PROVIDER: DatabaseProvider = "sqlite";
+const DEFAULT_PROVIDER: DatabaseProvider = process.env.VERCEL ? "mongodb" : "sqlite";
 
 let activeProvider: DatabaseProvider | null = null;
 
@@ -22,8 +19,10 @@ export async function initializePersistence(): Promise<DatabaseProvider> {
   const provider = getDatabaseProvider();
 
   if (provider === "mongodb") {
+    const { initMongoDatabase } = await import("./mongo");
     await initMongoDatabase();
   } else {
+    const { getDatabase } = await import("./sqlite3");
     getDatabase();
   }
 
@@ -35,9 +34,11 @@ export async function closePersistence(): Promise<void> {
   const provider = activeProvider ?? getDatabaseProvider();
 
   if (provider === "mongodb") {
+    const { closeMongoDatabase } = await import("./mongo");
     await closeMongoDatabase();
     return;
   }
 
+  const { closeDatabase } = await import("./sqlite3");
   closeDatabase();
 }

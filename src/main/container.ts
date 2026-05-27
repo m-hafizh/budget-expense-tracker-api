@@ -20,31 +20,62 @@ import { IRefreshTokenRepository } from "../domain/repositories/IRefreshTokenRep
 import { ITransactionRepository } from "../domain/repositories/ITransactionRepository";
 import { IUserRepository } from "../domain/repositories/IUserRepository";
 import { getDatabaseProvider } from "../infrastructure/config/persistence";
-import { MongoAwarenessRepository } from "../infrastructure/database/repositories/MongoAwarenessRepository";
-import { MongoBudgetRepository } from "../infrastructure/database/repositories/MongoBudgetRepository";
-import { MongoRefreshTokenRepository } from "../infrastructure/database/repositories/MongoRefreshTokenRepository";
-import { MongoTransactionRepository } from "../infrastructure/database/repositories/MongoTransactionRepository";
-import { MongoUserRepository } from "../infrastructure/database/repositories/MongoUserRepository";
-import { SqliteAwarenessRepository } from "../infrastructure/database/repositories/SqliteAwarenessRepository";
-import { SqliteBudgetRepository } from "../infrastructure/database/repositories/SqliteBudgetRepository";
-import { SqliteRefreshTokenRepository } from "../infrastructure/database/repositories/SqliteRefreshTokenRepository";
-import { SqliteTransactionRepository } from "../infrastructure/database/repositories/SqliteTransactionRepository";
-import { SqliteUserRepository } from "../infrastructure/database/repositories/SqliteUserRepository";
 import { Argon2PasswordHasher } from "../infrastructure/security/Argon2PasswordHasher";
 import { JwtAuthTokenService } from "../infrastructure/security/JwtAuthTokenService";
 
 const provider = getDatabaseProvider();
 
-const transactionRepository: ITransactionRepository =
-  provider === "mongodb" ? new MongoTransactionRepository() : new SqliteTransactionRepository();
-const budgetRepository: IBudgetRepository =
-  provider === "mongodb" ? new MongoBudgetRepository() : new SqliteBudgetRepository();
-const awarenessRepository: IAwarenessRepository =
-  provider === "mongodb" ? new MongoAwarenessRepository() : new SqliteAwarenessRepository();
-const userRepository: IUserRepository =
-  provider === "mongodb" ? new MongoUserRepository() : new SqliteUserRepository();
-const refreshTokenRepository: IRefreshTokenRepository =
-  provider === "mongodb" ? new MongoRefreshTokenRepository() : new SqliteRefreshTokenRepository();
+let transactionRepository: ITransactionRepository;
+let budgetRepository: IBudgetRepository;
+let awarenessRepository: IAwarenessRepository;
+let userRepository: IUserRepository;
+let refreshTokenRepository: IRefreshTokenRepository;
+
+if (provider === "mongodb") {
+  const { MongoTransactionRepository } = require("../infrastructure/database/repositories/MongoTransactionRepository") as {
+    MongoTransactionRepository: new () => ITransactionRepository;
+  };
+  const { MongoBudgetRepository } = require("../infrastructure/database/repositories/MongoBudgetRepository") as {
+    MongoBudgetRepository: new () => IBudgetRepository;
+  };
+  const { MongoAwarenessRepository } = require("../infrastructure/database/repositories/MongoAwarenessRepository") as {
+    MongoAwarenessRepository: new () => IAwarenessRepository;
+  };
+  const { MongoUserRepository } = require("../infrastructure/database/repositories/MongoUserRepository") as {
+    MongoUserRepository: new () => IUserRepository;
+  };
+  const { MongoRefreshTokenRepository } = require("../infrastructure/database/repositories/MongoRefreshTokenRepository") as {
+    MongoRefreshTokenRepository: new () => IRefreshTokenRepository;
+  };
+
+  transactionRepository = new MongoTransactionRepository();
+  budgetRepository = new MongoBudgetRepository();
+  awarenessRepository = new MongoAwarenessRepository();
+  userRepository = new MongoUserRepository();
+  refreshTokenRepository = new MongoRefreshTokenRepository();
+} else {
+  const { SqliteTransactionRepository } = require("../infrastructure/database/repositories/SqliteTransactionRepository") as {
+    SqliteTransactionRepository: new () => ITransactionRepository;
+  };
+  const { SqliteBudgetRepository } = require("../infrastructure/database/repositories/SqliteBudgetRepository") as {
+    SqliteBudgetRepository: new () => IBudgetRepository;
+  };
+  const { SqliteAwarenessRepository } = require("../infrastructure/database/repositories/SqliteAwarenessRepository") as {
+    SqliteAwarenessRepository: new () => IAwarenessRepository;
+  };
+  const { SqliteUserRepository } = require("../infrastructure/database/repositories/SqliteUserRepository") as {
+    SqliteUserRepository: new () => IUserRepository;
+  };
+  const { SqliteRefreshTokenRepository } = require("../infrastructure/database/repositories/SqliteRefreshTokenRepository") as {
+    SqliteRefreshTokenRepository: new () => IRefreshTokenRepository;
+  };
+
+  transactionRepository = new SqliteTransactionRepository();
+  budgetRepository = new SqliteBudgetRepository();
+  awarenessRepository = new SqliteAwarenessRepository();
+  userRepository = new SqliteUserRepository();
+  refreshTokenRepository = new SqliteRefreshTokenRepository();
+}
 
 const passwordHasher = new Argon2PasswordHasher();
 const authTokenService = new JwtAuthTokenService();

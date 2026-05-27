@@ -143,6 +143,21 @@ npm run dev
 - Swagger UI: `http://localhost:3001/docs`
 - OpenAPI JSON: `http://localhost:3001/openapi.json`
 
+### Deploying On Vercel
+
+This project is configured for Vercel serverless runtime through [vercel.json](vercel.json) and [api/index.ts](api/index.ts).
+
+Required Vercel environment variables:
+
+- `JWT_ACCESS_SECRET`
+- `DB_PROVIDER=mongodb`
+- `MONGODB_URI` (use a cloud MongoDB URI such as MongoDB Atlas)
+- `MONGODB_DB_NAME`
+
+Important note:
+
+- Do not use SQLite on Vercel (`DB_PROVIDER=sqlite`) because serverless file systems are ephemeral and unsuitable for persistent SQLite data.
+
 ### Authentication
 
 Public auth endpoints:
